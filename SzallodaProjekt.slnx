@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SzallodaProjekt/SzallodaProjekt.csproj" />
+  <Project Path="SzallodaProjektTeszt/SzallodaProjektTeszt.csproj" />
+</Solution>
