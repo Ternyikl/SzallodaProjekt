@@ -152,5 +152,23 @@ namespace SzallodaProjekt.Teszt
             Assert.That(eredmeny["Kovács Anna"], Is.EqualTo(165000));
             Assert.That(eredmeny["Nagy Béla"], Is.EqualTo(165000));
         }
+
+        [Test]
+        public void Test_SzobakFoglaltsaga()
+        {
+            var eredmeny = this.elemzo.SzobakFoglaltsaga();
+            Assert.That(eredmeny[101], Is.EqualTo(4)); // 3 + 1 éjszaka
+            Assert.That(eredmeny[102], Is.EqualTo(5));
+            Assert.That(eredmeny[103], Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Test_BevetelKategoriankent()
+        {
+            var eredmeny = this.elemzo.BevetelKategoriankent();
+            Assert.That(eredmeny["Standard"], Is.EqualTo(60000)); // 3 éjszaka * 15000 + 1 éjszaka * 15000
+            Assert.That(eredmeny["Deluxe"], Is.EqualTo(150000)); // 5 éjszaka * 30000
+            Assert.That(eredmeny["Lakosztály"], Is.EqualTo(120000)); // 2 éjszaka * 60000
+        }
     }
 }

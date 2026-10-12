@@ -69,7 +69,7 @@ namespace SzallodaProjekt
         // 3. Készíts listát, amely formázott szövegként tartalmazza a foglalásokat az alábbi formában: "[VendegNeve] - [EjszakakSzama] éjszaka".
         public List<string> FoglalasokSzoveggel()
         {
-            List<string> foglalasokSzoveggel = foglalasok.Join(vendegek, f => f.VendegId, v => v.VendegId, (f, v) => new { v.Nev, f.EjszakakSzama}).Select(x => $"{x.Nev} - {x.EjszakakSzama}").ToList();
+            List<string> foglalasokSzoveggel = foglalasok.Join(vendegek, f => f.VendegId, v => v.VendegId, (f, v) => new { v.Nev, f.EjszakakSzama }).Select(x => $"{x.Nev} - {x.EjszakakSzama} éjszaka").ToList();
             return foglalasokSzoveggel;
         }
 
@@ -196,7 +196,29 @@ namespace SzallodaProjekt
         // 16. Készíts egy teljes összegző szótárt (Dictionary<string, int>), amely minden vendéghez (név) hozzárendeli az általa összesen kifizetett összeget!
         public Dictionary<string, int> VendegKoltsekSzotar()
         {
-            throw new NotImplementedException();
+            Dictionary<string, int> vendegKoltsekSzotar = foglalasok.Join(vendegek, f => f.VendegId, v => v.VendegId, (f, v) => new { f, v })
+                .Join(szobak, fv => fv.f.SzobaId, s => s.SzobaId, (fv, s) => new { fv.v.Nev, TeljesAr = fv.f.EjszakakSzama * s.ArPerEjszaka })
+                .GroupBy(x => x.Nev).ToDictionary(g => g.Key, g => g.Sum(x => x.TeljesAr));
+            return vendegKoltsekSzotar;
+        }
+
+        //Saját feladatok:
+
+        // 17. Készíts egy szótárt, amely kategóriánként megadja, hogy az adott kategóriában mennyi bevétel keletkezett összesen!
+        public Dictionary<string, int> BevetelKategoriankent()
+        {
+            Dictionary<string, int> bevetelKategoriankent = foglalasok.Join(szobak, f => f.SzobaId, s => s.SzobaId, (f, s) => new { s.Kategoria, TeljesAr = f.EjszakakSzama * s.ArPerEjszaka })
+                .GroupBy(x => x.Kategoria)
+                .ToDictionary(g => g.Key, g => g.Sum(x => x.TeljesAr));
+            return bevetelKategoriankent;
+        }
+
+        // 18. Készíts egy szótárt, amely szobánként megadja, hogy az adott szobában összesen hány éjszakát töltöttek el a vendégek!
+        public Dictionary<int, int> SzobakFoglaltsaga()
+        {
+            Dictionary<int, int> szobakFoglaltsaga = foglalasok.GroupBy(f => f.SzobaId)
+                .ToDictionary(g => g.Key, g => g.Sum(f => f.EjszakakSzama));
+            return szobakFoglaltsaga;
         }
     }
 }
